@@ -1,0 +1,87 @@
+import com.xzzpig.pigutils.core.MD5
+
+buildscript {
+    ext.kotlin_version = '1.2.21'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url 'https://www.jitpack.io' }
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'de.undercouch:gradle-download-task:3.3.0'
+        classpath "gradle.plugin.com.dorongold.plugins:task-tree:1.2.2"
+        classpath 'com.github.xzzpig.PigUtils:Core:719a7dec80'
+    }
+}
+
+group 'com.xzzpig.bukkit'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'maven'
+apply plugin: 'de.undercouch.download'
+apply plugin: "com.dorongold.task-tree"
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'https://www.jitpack.io' }
+    maven { url 'https://ci.filoghost.me/plugin/repository/everything/' }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+//    compile 'com.github.xzzpig.PigUtils:Core:719a7dec80'
+//    compile 'com.github.xzzpig.PigUtils:PigSimpleWeb:719a7dec80'
+//    compile 'com.github.xzzpig.PigUtils:WebSocket:719a7dec80'
+//    compile 'com.github.xzzpig.PigUtils:Data:719a7dec80'
+//    compile 'com.github.xzzpig.PigUtils:IO:719a7dec80'
+    compile group: 'com.github.xzzpig', name: 'PigUtils', version: '719a7dec80'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'com.gmail.filoghost.holographicdisplays', name: 'holographicdisplays-api', version: '2.2.7-SNAPSHOT'
+}
+
+jar {
+    from {
+        configurations.compile.filter { it.path.contains("xzzpig") }.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    from {
+        configurations.compile.filter { it.path.contains("kotlin") }.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task downloadCraftbukkit {
+    def jarFile = file('libs/craftbukkit-1.7.10.jar')
+    if (jarFile.exists() && MD5.GetMD5Code(jarFile) == "f2a089414a17594896520e823fa19da6") {
+        return
+    }
+    download {
+        src 'https://jaist.dl.sourceforge.net/project/craftbukkitfile/craftbukkit-1.7.10-R4.jar'
+        dest jarFile
+    }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}.dependsOn downloadCraftbukkit
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+task javaDoc(type: Javadoc) {
+    options.encoding = "UTF-8"
+    failOnError false
+    source = sourceSets.main.allJava
+    classpath += configurations.compile
+}
