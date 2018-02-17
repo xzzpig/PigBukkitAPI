@@ -32,20 +32,13 @@ repositories {
     mavenCentral()
     jcenter()
     maven { url 'https://www.jitpack.io' }
-    maven { url 'https://ci.filoghost.me/plugin/repository/everything/' }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-//    compile 'com.github.xzzpig.PigUtils:Core:719a7dec80'
-//    compile 'com.github.xzzpig.PigUtils:PigSimpleWeb:719a7dec80'
-//    compile 'com.github.xzzpig.PigUtils:WebSocket:719a7dec80'
-//    compile 'com.github.xzzpig.PigUtils:Data:719a7dec80'
-//    compile 'com.github.xzzpig.PigUtils:IO:719a7dec80'
     compile group: 'com.github.xzzpig', name: 'PigUtils', version: '719a7dec80'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'com.gmail.filoghost.holographicdisplays', name: 'holographicdisplays-api', version: '2.2.7-SNAPSHOT'
 }
 
 jar {
