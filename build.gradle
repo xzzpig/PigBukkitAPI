@@ -13,12 +13,12 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'de.undercouch:gradle-download-task:3.3.0'
         classpath "gradle.plugin.com.dorongold.plugins:task-tree:1.2.2"
-        classpath 'com.github.xzzpig.PigUtils:Core:719a7dec80'
+        classpath('com.github.xzzpig.PigUtils:Core:719a7dec80')
     }
 }
 
 group 'com.xzzpig.bukkit'
-version '1.0'
+version '1.1'
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
@@ -36,7 +36,10 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile group: 'com.github.xzzpig', name: 'PigUtils', version: '719a7dec80'
+    compile(group: 'com.github.xzzpig', name: 'PigUtils', version: '719a7dec80') {
+        exclude group: 'com.github.xzzpig.PigUtils', module: 'Web'
+    }
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

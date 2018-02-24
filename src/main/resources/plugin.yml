@@ -1,7 +1,9 @@
 name: PigAPI
 main: com.xzzpig.bukkit.pigapi.plugin.Main
-version: V1.0
+version: V1.1
 author: xzzpig
+depends:
+- PigAPI
 commands:
   pigapi:
     description: PigAPI的主命令

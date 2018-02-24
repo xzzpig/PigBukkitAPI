@@ -5,6 +5,8 @@ import com.xzzpig.bukkit.pigapi.TDataUtils;
 import com.xzzpig.bukkit.pigapi.TPrefix;
 import com.xzzpig.bukkit.pigapi.event.*;
 import com.xzzpig.bukkit.pigapi.javascript.*;
+import com.xzzpig.bukkit.pigapi.pigcommand.PigCommandContext;
+import com.xzzpig.bukkit.pigapi.pigcommand.plugin.Commands;
 import com.xzzpig.pigutils.Debuger;
 import com.xzzpig.pigutils.TJython;
 import com.xzzpig.pigutils.TScript;
@@ -21,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.List;
 
 public class Main extends JavaPlugin {
 
@@ -51,7 +54,7 @@ public class Main extends JavaPlugin {
         new Thread(()->{
             JSPlugin.freshPluginState();
         }).start();
-        ;
+
         getServer().getPluginManager().registerEvents(JSListener.instance, this);
         getServer().getPluginManager().registerEvents(JSListener_1.instance, this);
         getServer().getPluginManager().registerEvents(JSListener_2.instance, this);
@@ -126,7 +129,18 @@ public class Main extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return Help.PigAPI.runCommand(Help.PigAPI.new CommandInstance(sender, command, label, args));
+        //        return Help.PigAPI.runCommand(Help.PigAPI.new CommandInstance(sender, command, label, args));
+        PigCommandContext commandContext = new PigCommandContext(sender, command, label, args);
+        try {
+            Commands.getManager().execute(commandContext);
+        } catch (Exception e) {
+            Commands.getManager().handleCommandException("PigAPI", e, commandContext);
+        }
+        return true;
+    }
+
+    @Override public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        return Commands.getManager().handleTabCompile(new PigCommandContext(sender, command, alias, args), "PigAPI");
     }
 
     // 插件停用函数

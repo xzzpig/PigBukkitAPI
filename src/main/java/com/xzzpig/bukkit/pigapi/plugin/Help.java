@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class Help {
     public static final Map<String, List<String>> deseemap = new HashMap<>();
     private static final File scriptDir = new File(Main.self.getDataFolder(), "scripts");
